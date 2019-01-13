@@ -1,17 +1,22 @@
 #include <Arduino.h>
+#include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
-#include <Hash.h>
 #include <Scheduler.h>
 
-#include "RCCommandTask.h"
-#include "RCCommandQueue.h"
+#include "RCCommandTask.hpp"
+#include "RCCommandQueue.hpp"
+#include "WebServer.hpp"
+
 #include "LocalSettings.h"
 #include "Settings.h"
 
 void setup()
 {
+    ArduinoOTA.begin();
+
     Serial.begin(9600);
+    Serial.printf("\nup and running...\n");;
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PSK);
@@ -36,6 +41,11 @@ void setup()
     RCSwitch swtch;
     swtch.enableTransmit(RC_TRANSMIT_PIN);
     RCCommandQueue<COMMAND_QUEUE_LENGTH> commandQueue(swtch);
+
+    WebServer server;
+    server.start();
+
+    Serial.println("Server running on port 80");
 
     Scheduler.start(&RCCommandTask::instance(commandQueue));
 

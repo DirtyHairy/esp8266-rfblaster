@@ -2,7 +2,8 @@
 #define RC_COMMAND_TASK
 
 #include <Scheduler.h>
-#include <RCCommandQueueInterface.h>
+
+#include "RCCommandQueueInterface.hpp"
 
 class RCCommandTask: public Task {
     public:

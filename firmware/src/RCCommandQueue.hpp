@@ -4,9 +4,9 @@
 #include <Arduino.h>
 #include <RCSwitch.h>
 
-#include "SimpleQueue.h"
-#include "RCCommand.h"
-#include "RCCommandQueueInterface.h"
+#include "SimpleQueue.hpp"
+#include "RCCommand.hpp"
+#include "RCCommandQueueInterface.hpp"
 
 template <unsigned int size> class RCCommandQueue: public RCCommandQueueInterface {
     public:

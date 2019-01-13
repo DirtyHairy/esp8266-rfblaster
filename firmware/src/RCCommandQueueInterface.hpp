@@ -1,7 +1,7 @@
 #ifndef RC_COMMAND_QUEUE_INTERFACE_H
 #define RC_COMMAND_QUEUE_INTERFACE_H
 
-#include "RCCommand.h"
+#include "RCCommand.hpp"
 
 class RCCommandQueueInterface {
     public:
