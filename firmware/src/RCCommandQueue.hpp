@@ -22,7 +22,7 @@ template <unsigned int size> class RCCommandQueue: public RCCommandQueueInterfac
             if (!queue.pop(command)) return;
 
             Serial.printf(
-                "sending RC command; code = %ul, length = %ul, protocol = %ul, repeat = %ul, pulse length = %ul",
+                "sending RC command; code = %ul, length = %ul, protocol = %ul, repeat = %ul, pulse length = %ul\n",
                 command.code,
                 command.codeLength,
                 command.protocol,

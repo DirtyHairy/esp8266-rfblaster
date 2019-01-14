@@ -6,6 +6,7 @@
 
 #include "RCCommandTask.hpp"
 #include "RCCommandQueue.hpp"
+#include "UptimeTask.hpp"
 #include "WebServer.hpp"
 
 #include "LocalSettings.h"
@@ -42,12 +43,13 @@ void setup()
     swtch.enableTransmit(RC_TRANSMIT_PIN);
     RCCommandQueue<COMMAND_QUEUE_LENGTH> commandQueue(swtch);
 
-    WebServer server;
+    WebServer server(commandQueue, UptimeTask::instance());
     server.start();
 
     Serial.println("Server running on port 80");
 
     Scheduler.start(&RCCommandTask::instance(commandQueue));
+    Scheduler.start(&UptimeTask::instance());
 
     Scheduler.begin();
 }

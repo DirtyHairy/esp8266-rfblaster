@@ -3,10 +3,13 @@
 
 #include <ESPAsyncWebServer.h>
 
+#include "RCCommandQueueInterface.hpp"
+#include "UptimeTask.hpp"
+
 class WebServer {
     public:
 
-        WebServer();
+        WebServer(RCCommandQueueInterface& commandQueue, UptimeTask& uptimeTask);
 
         void start();
 
@@ -14,11 +17,25 @@ class WebServer {
 
         void handleNotFound(AsyncWebServerRequest *request);
 
+        void handleCommandSend(AsyncWebServerRequest *request);
+
+        void handleStatus(AsyncWebServerRequest* request);
+
         void internalServerError(AsyncWebServerRequest *request, const char* message = "");
+
+        void badRequest(AsyncWebServerRequest *request, const char* message = "");
+
+        void jsonError(AsyncWebServerRequest *request, unsigned int code, const char* message = "");
+
+        bool filterHTTPMethod(AsyncWebServerRequest *request, WebRequestMethodComposite);
 
     private:
 
         AsyncWebServer server;
+
+        RCCommandQueueInterface& commandQueue;
+
+        UptimeTask& uptimeTask;
 
     private:
 
