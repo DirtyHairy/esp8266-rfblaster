@@ -21,11 +21,11 @@ class WebServer {
 
         void handleStatus(AsyncWebServerRequest* request);
 
-        void internalServerError(AsyncWebServerRequest *request, const char* message = "");
+        void internalServerError(AsyncWebServerRequest *request, String message = "");
 
-        void badRequest(AsyncWebServerRequest *request, const char* message = "");
+        void badRequest(AsyncWebServerRequest *request, String message = "");
 
-        void jsonError(AsyncWebServerRequest *request, unsigned int code, const char* message = "");
+        void jsonError(AsyncWebServerRequest *request, unsigned int code, String message = "");
 
         bool filterHTTPMethod(AsyncWebServerRequest *request, WebRequestMethodComposite);
 

@@ -33,32 +33,32 @@ bool WebServer::filterHTTPMethod(AsyncWebServerRequest *request, WebRequestMetho
     return request->method() == method;
 }
 
-void WebServer::internalServerError(AsyncWebServerRequest *request, const char* message) {
-    request->send(500, "text/plain", message);
+void WebServer::internalServerError(AsyncWebServerRequest *request, String message) {
+    request->send(500, F("text/plain"), message);
 }
 
-void WebServer::jsonError(AsyncWebServerRequest *request, unsigned int code, const char* message) {
+void WebServer::jsonError(AsyncWebServerRequest *request, unsigned int code, String message) {
     AsyncJsonResponse *response = new AsyncJsonResponse();
     JsonObject& root = response->getRoot();
 
-    root["message"] = message;
+    root[F("message")] = message;
 
     response->setCode(code);
-    response->addHeader("Cache-Control", "no-cache");
+    response->addHeader(F("Cache-Control"), F("no-cache"));
 
     response->setLength();
     request->send(response);
 }
 
-void WebServer::badRequest(AsyncWebServerRequest *request, const char* message) {
+void WebServer::badRequest(AsyncWebServerRequest *request, String message) {
     jsonError(request, 400, message);
 }
 
 void WebServer::handleNotFound(AsyncWebServerRequest *request) {
-    AsyncWebServerResponse* response = request->beginResponse(SPIFFS, "/www/not_found.html", "text/html");
-    if (!response) return internalServerError(request, "file not found");
+    AsyncWebServerResponse* response = request->beginResponse(SPIFFS, F("/www/not_found.html"), F("text/html"));
+    if (!response) return internalServerError(request, F("file not found"));
 
-    response->addHeader("Cache-Control", "max-age=3600");
+    response->addHeader(F("Cache-Control"), F("max-age=3600"));
     response->setCode(404);
 
     request->send(response);
@@ -67,46 +67,46 @@ void WebServer::handleNotFound(AsyncWebServerRequest *request) {
 void WebServer::handleCommandSend(AsyncWebServerRequest *request) {
     AsyncWebParameter* param;
 
-    param = request->getParam("code");
-    if (!param) return badRequest(request, "missing parameter \"code\"");
+    param = request->getParam(F("code"));
+    if (!param) return badRequest(request, F("missing parameter \"code\""));
 
     int code = param->value().toInt();
-    if (code <= 0) return badRequest(request, "bad code");
+    if (code <= 0) return badRequest(request, F("bad code"));
 
-    param = request->getParam("code-length");
-    if (!param) return badRequest(request, "missing parameter \"code-length\"");
+    param = request->getParam(F("code-length"));
+    if (!param) return badRequest(request, F("missing parameter \"code-length\""));
 
     int codeLength = param->value().toInt();
-    if (codeLength <= 0) return badRequest(request, "bad code length");
+    if (codeLength <= 0) return badRequest(request, F("bad code length"));
 
     RCCommand command(code, codeLength);
 
-    param = request->getParam("protocol");
+    param = request->getParam(F("protocol"));
     if (param) {
         int protocol = param->value().toInt();
-        if (protocol <= 0) return badRequest(request, "bad protocol");
+        if (protocol <= 0) return badRequest(request, F("bad protocol"));
 
         command.protocol = protocol;
     }
 
-    param = request->getParam("repeat");
+    param = request->getParam(F("repeat"));
     if (param) {
         int repeat = param->value().toInt();
-        if (repeat <= 0) return badRequest(request, "bad repeat count");
+        if (repeat <= 0) return badRequest(request, F("bad repeat count"));
 
         command.repeat = repeat;
     }
 
-    param = request->getParam("pulse-length");
+    param = request->getParam(F("pulse-length"));
     if (param) {
         int pulseLength = param->value().toInt();
-        if (pulseLength <= 0) return badRequest(request, "bad pulse length");
+        if (pulseLength <= 0) return badRequest(request, F("bad pulse length"));
 
         command.pulseLength = pulseLength;
     }
 
-    Serial.printf(
-        "received RC command; code = %ul, length = %ul, protocol = %ul, repeat = %ul, pulse length = %ul\n",
+    Serial.printf_P(
+        PSTR("received RC command; code = %ul, length = %ul, protocol = %ul, repeat = %ul, pulse length = %ul\n"),
         command.code,
         command.codeLength,
         command.protocol,
@@ -114,22 +114,22 @@ void WebServer::handleCommandSend(AsyncWebServerRequest *request) {
         command.pulseLength
     );
 
-    if (commandQueue.push(command)) request->send(200, "text/plain");
-    else jsonError(request, 503, "too many enqueued commands, retry later");
+    if (commandQueue.push(command)) request->send(200, F("text/plain"));
+    else jsonError(request, 503, F("too many enqueued commands, retry later"));
 }
 
 void WebServer::handleStatus(AsyncWebServerRequest* request) {
     AsyncJsonResponse *response = new AsyncJsonResponse();
     JsonObject& root = response->getRoot();
 
-    root["name"] = MDNS_NAME;
-    root["ssid"] = WIFI_SSID;
-    root["uptimeSeconds"] = uptimeTask.getUptimeSeconds();
-    root["freeHeap"] = ESP.getFreeHeap();
-    root["sdk"] = ESP.getFullVersion();
+    root[F("name")] = MDNS_NAME;
+    root[F("ssid")] = WIFI_SSID;
+    root[F("uptimeSeconds")] = uptimeTask.getUptimeSeconds();
+    root[F("freeHeap")] = ESP.getFreeHeap();
+    root[F("sdk")] = ESP.getFullVersion();
 
     response->setCode(200);
-    response->addHeader("Cache-Control", "no-cache");
+    response->addHeader(F("Cache-Control"), F("no-cache"));
 
     response->setLength();
     request->send(response);

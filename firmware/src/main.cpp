@@ -17,26 +17,26 @@ void setup()
     ArduinoOTA.begin();
 
     Serial.begin(9600);
-    Serial.printf("\nup and running...\n");;
+    Serial.printf_P(PSTR("\nup and running...\n"));
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PSK);
 
     if (!WiFi.waitForConnectResult() || WiFi.localIP() == static_cast<uint32_t>(0))
     {
-        Serial.println("wifi connection failed");
+        Serial.println(F("wifi connection failed"));
         return;
     }
 
-    Serial.print("connected, IP: ");
+    Serial.print(F("connected, IP: "));
     Serial.println(WiFi.localIP());
 
     if (!MDNS.begin(MDNS_NAME))
     {
-        Serial.println("MDNS failed");
+        Serial.println(F("MDNS failed"));
     }
 
-    Serial.print("MDNS started as ");
+    Serial.print(F("MDNS started as "));
     Serial.println(MDNS_NAME);
 
     RCSwitch swtch;
@@ -46,7 +46,7 @@ void setup()
     WebServer server(commandQueue, UptimeTask::instance());
     server.start();
 
-    Serial.println("Server running on port 80");
+    Serial.println(F("Server running on port 80"));
 
     Scheduler.start(&RCCommandTask::instance(commandQueue));
     Scheduler.start(&UptimeTask::instance());
