@@ -1,10 +1,11 @@
 #include <functional>
 #include <ESPAsyncWebServer.h>
 #include <AsyncJson.h>
+#include <ESP8266WiFi.h>
 
 #include "WebServer.hpp"
 #include "RCCommand.hpp"
-#include "LocalSettings.h"
+#include "Settings.h"
 
 using namespace std::placeholders;
 using std::bind;
@@ -122,11 +123,17 @@ void WebServer::handleStatus(AsyncWebServerRequest* request) {
     AsyncJsonResponse *response = new AsyncJsonResponse();
     JsonObject& root = response->getRoot();
 
-    root[F("name")] = MDNS_NAME;
-    root[F("ssid")] = WIFI_SSID;
-    root[F("uptimeSeconds")] = uptimeTask.getUptimeSeconds();
     root[F("freeHeap")] = ESP.getFreeHeap();
-    root[F("sdk")] = ESP.getFullVersion();
+    root[F("hostname")] = WiFi.hostname();
+    root[F("ip")] = WiFi.localIP().toString();
+    root[F("mac")] = WiFi.macAddress();
+    root[F("gateway")] = WiFi.gatewayIP().toString();
+    root[F("dns")] = WiFi.dnsIP().toString();
+    root[F("ssid")] = WiFi.SSID();
+    root[F("uptimeSeconds")] = uptimeTask.getUptimeSeconds();
+    root[F("sdkVersion")] = ESP.getFullVersion();
+    root[F("apiVersion")] = API_VERSION;
+    root[F("resetInfo")] = ESP.getResetInfo();
 
     response->setCode(200);
     response->addHeader(F("Cache-Control"), F("no-cache"));

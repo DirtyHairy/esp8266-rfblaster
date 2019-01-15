@@ -19,25 +19,29 @@ void setup()
     Serial.begin(9600);
     Serial.printf_P(PSTR("\nup and running...\n"));
 
+    WiFi.hostname(HOSTNAME);
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PSK);
 
-    if (!WiFi.waitForConnectResult() || WiFi.localIP() == static_cast<uint32_t>(0))
+    while (!WiFi.waitForConnectResult() || WiFi.localIP() == static_cast<uint32_t>(0))
     {
         Serial.println(F("wifi connection failed"));
-        return;
+        delay(1000);
     }
 
     Serial.print(F("connected, IP: "));
     Serial.println(WiFi.localIP());
 
-    if (!MDNS.begin(MDNS_NAME))
+    Serial.print(F("hostname: "));
+    Serial.println(WiFi.hostname());
+
+    if (!MDNS.begin(HOSTNAME))
     {
         Serial.println(F("MDNS failed"));
     }
 
-    Serial.print(F("MDNS started as "));
-    Serial.println(MDNS_NAME);
+    Serial.print(F("MDNS advertising as "));
+    Serial.println(HOSTNAME);
 
     RCSwitch swtch;
     swtch.enableTransmit(RC_TRANSMIT_PIN);

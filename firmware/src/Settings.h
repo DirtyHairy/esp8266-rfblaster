@@ -1,3 +1,6 @@
 #define RC_TRANSMIT_PIN 5
 #define COMMAND_QUEUE_LENGTH 20
+
 #define STATUS_LED_PIN 16
+
+#define API_VERSION 1
