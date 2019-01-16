@@ -8,6 +8,7 @@
 #include "RCCommandQueue.hpp"
 #include "UptimeTask.hpp"
 #include "WebServer.hpp"
+#include "MDNSTask.hpp"
 
 #include "LocalSettings.h"
 #include "Settings.h"
@@ -18,6 +19,9 @@ void setup()
 
     Serial.begin(9600);
     Serial.printf_P(PSTR("\nup and running...\n"));
+
+    Serial.print(F("connecting to "));
+    Serial.println(WIFI_SSID);
 
     WiFi.hostname(HOSTNAME);
     WiFi.mode(WIFI_STA);
@@ -54,6 +58,7 @@ void setup()
 
     Scheduler.start(&RCCommandTask::instance(commandQueue));
     Scheduler.start(&UptimeTask::instance());
+    Scheduler.start(&MDNSTask::instance());
 
     Scheduler.begin();
 }
