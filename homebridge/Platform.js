@@ -50,7 +50,7 @@ class Platform {
         this.log(`Setting initial state of ${config.name} to ${state ? 'on' : 'off'}`);
 
         try {
-            this.toggle(config, state);
+            await this.toggle(config, state);
         } catch (e) {}
 
         service.getCharacteristic(this.Characteristic.On).on('set', async (value, callback) => {
