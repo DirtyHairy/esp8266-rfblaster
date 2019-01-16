@@ -2,7 +2,6 @@
 #define MDNS_TASK_H
 
 #include <Scheduler.h>
-#include <ESP8266mDNS.h>
 
 class MDNSTask: public Task {
     public:

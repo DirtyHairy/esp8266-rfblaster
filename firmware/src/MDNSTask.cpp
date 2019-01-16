@@ -1,3 +1,5 @@
+#include <ESP8266mDNS.h>
+
 #include "MDNSTask.hpp"
 
 MDNSTask::MDNSTask() {}
