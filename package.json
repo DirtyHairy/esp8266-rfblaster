@@ -1,0 +1,31 @@
+{
+  "name": "homebridge-esp8266-rfblaster",
+  "version": "0.0.1",
+  "description": "ESP8266 RF blaster with homebridge integration.",
+  "main": "homebridge/plugin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DirtyHairy/esp8266-rfblaster.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DirtyHairy/esp8266-rfblaster/issues"
+  },
+  "homepage": "https://github.com/DirtyHairy/esp8266-rfblaster#readme",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "engines": {
+    "node": ">=7.6.0",
+    "homebridge": ">=0.4.0"
+  },
+  "dependencies": {
+    "ajv": "^6.7.0",
+    "axios": "^0.18.0",
+    "uuid": "^3.3.2"
+  }
+}
