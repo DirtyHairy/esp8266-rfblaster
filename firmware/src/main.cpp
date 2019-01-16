@@ -1,14 +1,12 @@
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
 #include <Scheduler.h>
 
 #include "RCCommandTask.hpp"
 #include "RCCommandQueue.hpp"
 #include "UptimeTask.hpp"
 #include "WebServer.hpp"
-#include "MDNSTask.hpp"
 
 #include "LocalSettings.h"
 #include "Settings.h"
@@ -39,14 +37,6 @@ void setup()
     Serial.print(F("hostname: "));
     Serial.println(WiFi.hostname());
 
-    if (!MDNS.begin(HOSTNAME))
-    {
-        Serial.println(F("MDNS failed"));
-    }
-
-    Serial.print(F("MDNS advertising as "));
-    Serial.println(HOSTNAME);
-
     RCSwitch swtch;
     swtch.enableTransmit(RC_TRANSMIT_PIN);
     RCCommandQueue<COMMAND_QUEUE_LENGTH> commandQueue(swtch);
@@ -58,7 +48,6 @@ void setup()
 
     Scheduler.start(&RCCommandTask::instance(commandQueue));
     Scheduler.start(&UptimeTask::instance());
-    Scheduler.start(&MDNSTask::instance());
 
     Scheduler.begin();
 }
