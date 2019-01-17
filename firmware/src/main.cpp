@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <ArduinoOTA.h>
 #include <ESP8266WiFi.h>
 #include <Scheduler.h>
 
@@ -7,14 +6,13 @@
 #include "RCCommandQueue.hpp"
 #include "UptimeTask.hpp"
 #include "WebServer.hpp"
+#include "GratuitousARPTask.h"
 
 #include "LocalSettings.h"
 #include "Settings.h"
 
 void setup()
 {
-    ArduinoOTA.begin();
-
     Serial.begin(9600);
     Serial.printf_P(PSTR("\nup and running...\n"));
 
@@ -24,6 +22,7 @@ void setup()
     WiFi.hostname(HOSTNAME);
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PSK);
+    WiFi.setAutoReconnect(true);
 
     while (!WiFi.waitForConnectResult() || WiFi.localIP() == static_cast<uint32_t>(0))
     {
@@ -48,6 +47,7 @@ void setup()
 
     Scheduler.start(&RCCommandTask::instance(commandQueue));
     Scheduler.start(&UptimeTask::instance());
+    Scheduler.start(&GratuitousARPTask::instance());
 
     Scheduler.begin();
 }
