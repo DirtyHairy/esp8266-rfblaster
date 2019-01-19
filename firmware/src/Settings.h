@@ -1,4 +1,4 @@
-#define RC_TRANSMIT_PIN 5
+#define RC_TRANSMIT_PIN 4
 #define COMMAND_QUEUE_LENGTH 20
 
 #define STATUS_LED_PIN 16
